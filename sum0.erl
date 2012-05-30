@@ -3,7 +3,7 @@
 
 %% Problem
 %% =======
-%% Given a list of Integers in the range [-65000,65000],
+%% Given a list of Integers in the range [-65000, 65000],
 %% return true iff any _subset_ of the list sums to zero,
 %% false otherwise.
 %%
@@ -13,10 +13,17 @@
 
 %% Notes
 %% =====
-%% Immutable data -> re-allocate a new Sums bitvector w/ each new Num.
 %%
-%% If the list is long, or the numbers are (abs) large,
-%% then the Sums bitvectors can get rather long.
+%% There are two serious downsides to this implementation.
+%%
+%% First, because it's in Erlang, where all data is immutable,
+%% we must continually re-allocate new bitvectors, rather than
+%% re-use a pair of them (as we could in an imperative language).
+%%
+%% Also, this code does nothing to prevent the bitvectors from growing
+%% without bounds.  If the list contains many integers, or the
+%% integers have large absolute values, then the bitvectors can get
+%% rather long.
 %%
 %% More efficient if we first sort the lists?
 %% 
