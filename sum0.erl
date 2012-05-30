@@ -25,9 +25,7 @@
 %% integers have large absolute values, then the bitvectors can get
 %% rather long.
 %%
-%% More efficient if we first sort the lists?
-%% 
-%% Or perhaps if we first create just num bitvectors (and compare them),
+%% More efficient if we first create just num bitvectors (and compare them),
 %% then iteratively create sum bitvectors (and compare those)?
 
 
@@ -49,25 +47,25 @@ add_to_sums(0, Sums) ->
 add_to_sums(Num, Sums) ->
     mk_new_sums(Num, Sums) bor Sums.
 
+%% [int] -> bool
+has_zero_sum(Nums) ->
+    has_zero_sum(Nums, 2#0, 2#0).
+
 %% [int], bitvector, bitvector -> bool
-hzs_impl([], _, _) ->
+has_zero_sum([], _, _) ->
     false;
-hzs_impl([0|_], _, _) ->
+has_zero_sum([0|_], _, _) ->
     true;
-hzs_impl([N|Nums], PosSums, NegSums) ->
+has_zero_sum([N|Nums], PosSums, NegSums) ->
     {Ps, Ns} =
 	case N > 0 of
 	    true  -> {add_to_sums(N, PosSums), NegSums};
 	    false -> {PosSums, add_to_sums(-N, NegSums)}
 	end,
     case Ps band Ns of
-	0 -> hzs_impl(Nums, Ps, Ns);
+	0 -> has_zero_sum(Nums, Ps, Ns);
 	_ -> true
     end.
-
-%% [int] -> bool
-has_zero_sum(Nums) ->
-    hzs_impl(Nums, 2#0, 2#0).
 
 start() ->
     %% [0, 1, 2, -3] => true
